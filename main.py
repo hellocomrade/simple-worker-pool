@@ -1,5 +1,5 @@
 import sys
-import time
+import json
 import pika
 
 from multiprocessing import Process, Queue, Pool, Manager
@@ -10,9 +10,14 @@ def worker(idx, queue, message_queue_host, message_queue_exchange):
     while True:
         msg = queue.get()
         # print(f'Worker {idx}: {msg}')
-        connection = pika.BlockingConnection(pika.ConnectionParameters(host=message_queue_host))
-        channel = connection.channel()
-        channel.basic_publish(exchange=message_queue_exchange, routing_key='shock-index', body=msg)
+        obj = json.loads(msg)
+        if 'wav' in obj:
+            for wav in obj['wav']:
+                if '1814' == wav['id']:
+                    connection = pika.BlockingConnection(pika.ConnectionParameters(host=message_queue_host))
+                    channel = connection.channel()
+                    channel.basic_publish(exchange=message_queue_exchange, routing_key='shock-index', body=msg)
+                    break
         # connection.close()
 
 
