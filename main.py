@@ -7,6 +7,8 @@ from multiprocessing import Process, Queue, Pool, Manager
 
 def worker(idx, queue, message_queue_host, message_queue_exchange):
     print(f'Worker {idx} is up')
+    connection = pika.BlockingConnection(pika.ConnectionParameters(host=message_queue_host))
+    channel = connection.channel()
     while True:
         msg = queue.get()
         # print(f'Worker {idx}: {msg}')
@@ -14,11 +16,9 @@ def worker(idx, queue, message_queue_host, message_queue_exchange):
         if 'wav' in obj:
             for wav in obj['wav']:
                 if '1814' == wav['id']:
-                    connection = pika.BlockingConnection(pika.ConnectionParameters(host=message_queue_host))
-                    channel = connection.channel()
                     channel.basic_publish(exchange=message_queue_exchange, routing_key='shock-index', body=msg)
                     break
-        # connection.close()
+    # connection.close()
 
 
 def listener(dpath, q):
