@@ -12,7 +12,7 @@ def worker(idx, queue, message_queue_host, message_queue_exchange):
     while True:
         msg = queue.get()
         # print(f'Worker {idx}: {msg}')
-        obj = json.loads(msg)
+        obj = json.loads(msg) #(msg.tobytes().decode())
         if 'wav' in obj:
             for wav in obj['wav']:
                 if '1814' == wav['id']:
@@ -24,7 +24,7 @@ def worker(idx, queue, message_queue_host, message_queue_exchange):
 def listener(dpath, q):
     with open(dpath, 'r') as f:
         for line in f:
-            q.put(line)
+            q.put(line) #(memoryview(line.encode()).cast('B'))
 
 
 if '__main__' == __name__:
