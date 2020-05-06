@@ -1,3 +1,4 @@
+# https://docs.celeryproject.org/en/latest/userguide/configuration.html#configuration
 # The machinery in charge of routing messages.
 broker_url = 'pyamqp://guest:guest@192.168.56.102:5672//'
 

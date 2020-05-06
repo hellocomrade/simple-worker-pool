@@ -25,14 +25,14 @@ def set_keepalive_linux(sock, after_idle_sec=1, interval_sec=3, max_fails=5):
     sock.setsockopt(socket.IPPROTO_TCP, socket.TCP_KEEPCNT, max_fails)
 
 
-@signals.worker_init.connect
+@signals.worker_process_init.connect
 def init_worker(sender, signal, **kwargs):
     for li in celeryconfig.listener_list:
         sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         sock.connect((li['host'], li['port']))
         set_keepalive_linux(sock)
         socket_lst.append(sock)
-
+        # print(f'socket: {len(socket_lst)}')
 
 
 @signals.worker_process_shutdown.connect
