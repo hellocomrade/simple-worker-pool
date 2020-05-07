@@ -6,7 +6,7 @@ import socketserver
 class PacketHandler(socketserver.StreamRequestHandler):
     def handle(self):
         print(f'Handling incoming traffic from {self.client_address[0]}:{self.client_address[1]}')
-
+        # https://pika.readthedocs.io/en/stable/examples/heartbeat_and_blocked_timeouts.html
         def get_channel():
             connection = pika.BlockingConnection(pika.ConnectionParameters(host=mq_host, heartbeat=600, blocked_connection_timeout=300))
             return connection.channel()

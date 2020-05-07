@@ -4,16 +4,24 @@ import pika
 
 
 def callback(ch, method, properties, body):
-    print(body)
+    print(len(body))
 
 
 def main(message_queue_host, message_queue_exchange, message_queue_name):
-    connection = pika.BlockingConnection(pika.ConnectionParameters(host=message_queue_host))
-    channel = connection.channel()
-    channel.queue_bind(exchange=message_queue_exchange, queue=message_queue_name)
-    channel.basic_consume(queue=message_queue_name, on_message_callback=callback, auto_ack=True)
+    def get_channel():
+        connection = pika.BlockingConnection(pika.ConnectionParameters(host=message_queue_host, heartbeat=600, blocked_connection_timeout=300))
+        channel = connection.channel()
+        channel.queue_bind(exchange=message_queue_exchange, queue=message_queue_name)
+        channel.basic_consume(queue=message_queue_name, on_message_callback=callback, auto_ack=True)
+        return channel
+
     print('Start consuming...')
-    channel.start_consuming()
+    channel = get_channel()
+    while True:
+        try:
+            channel.start_consuming()
+        except pika.exceptions.StreamLostError as e:
+            channel = get_channel()
 
 
 if '__main__' == __name__:
