@@ -6,11 +6,20 @@ import socketserver
 class PacketHandler(socketserver.StreamRequestHandler):
     def handle(self):
         print(f'Handling incoming traffic from {self.client_address[0]}:{self.client_address[1]}')
-        connection = pika.BlockingConnection(pika.ConnectionParameters(host=mq_host))
-        channel = connection.channel()
+
+        def get_channel():
+            connection = pika.BlockingConnection(pika.ConnectionParameters(host=mq_host, heartbeat=600, blocked_connection_timeout=300))
+            return connection.channel()
+        channel = get_channel()
+        msg = None
         while True:
-            msg = self.rfile.readline().rstrip().decode()
-            channel.basic_publish(exchange=mq_exchange, routing_key='shock-index', body=msg)
+            try:
+                if not msg:
+                    msg = self.rfile.readline().rstrip().decode()
+                channel.basic_publish(exchange=mq_exchange, routing_key='shock-index', body=msg)
+                msg = None
+            except pika.exceptions.StreamLostError as e:
+                channel = get_channel()
 
 
 if '__main__' == __name__:
