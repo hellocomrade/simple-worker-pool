@@ -22,4 +22,5 @@ def init_worker(sender, signal, **kwargs):
 
 @signals.worker_process_shutdown.connect
 def shutdown_worker(sender, **kwargs):
-    connection.close()
+    if connection:
+        connection.close()
