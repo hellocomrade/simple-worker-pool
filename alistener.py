@@ -16,9 +16,10 @@ class PacketHandler(socketserver.StreamRequestHandler):
 if '__main__' == __name__:
     if 5 != len(sys.argv):
         print(f'{__file__} listener_host port message_queue_host, message_queue_exchange_name')
-    mq_host, mq_exchange = str(sys.argv[3]), str(sys.argv[4])
-    listener = socketserver.ForkingTCPServer((sys.argv[1], int(sys.argv[2])), PacketHandler)
-    try:
-        listener.serve_forever()
-    except Exception as e:
-        print(str(e), file=sys.stderr)
+    else:
+        mq_host, mq_exchange = str(sys.argv[3]), str(sys.argv[4])
+        listener = socketserver.ForkingTCPServer((sys.argv[1], int(sys.argv[2])), PacketHandler)
+        try:
+            listener.serve_forever()
+        except Exception as e:
+            print(str(e), file=sys.stderr)
