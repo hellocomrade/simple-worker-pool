@@ -14,10 +14,11 @@ channel = None
 
 @signals.worker_process_init.connect
 def init_worker(sender, signal, **kwargs):
-    global  connection
+    global connection
     global channel
     connection = pika.BlockingConnection(pika.ConnectionParameters(host=celeryconfig.message_queue_host))
     channel = connection.channel()
+    print(channel)
 
 
 @signals.worker_process_shutdown.connect
