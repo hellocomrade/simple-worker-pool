@@ -12,6 +12,7 @@ def main(message_queue_host, message_queue_exchange, message_queue_name):
     channel = connection.channel()
     channel.queue_bind(exchange=message_queue_exchange, queue=message_queue_name)
     channel.basic_consume(queue=message_queue_name, on_message_callback=callback, auto_ack=True)
+    print('Start consuming...')
     channel.start_consuming()
 
 
