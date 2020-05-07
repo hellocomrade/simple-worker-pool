@@ -1,9 +1,9 @@
 # https://docs.celeryproject.org/en/latest/userguide/configuration.html#configuration
 # The machinery in charge of routing messages.
-broker_url = 'pyamqp://guest:guest@192.168.56.102:5672//'
-message_queue_host = ''
-message_queue_exchange = ''
-message_queue_routing_key = ''
+broker_url = 'pyamqp://guest:guest@192.168.56.102:5672/'
+message_queue_host = '192.168.56.102'
+message_queue_exchange = 'shock-index'
+message_queue_routing_key = 'shock-index'
 # Also use Redis to store results.
 # result_backend = 'redis://'
 
