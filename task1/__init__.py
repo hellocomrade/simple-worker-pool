@@ -3,7 +3,7 @@ import pika
 from celery import Celery
 from celery import signals
 
-from task import celeryconfig
+from task1 import celeryconfig
 
 app = Celery()
 app.config_from_object(celeryconfig)
